@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
     def __init__(self):
@@ -15,13 +16,21 @@ class AlienInvasion:
         programIcon=pygame.image.load("images/balatro-1.png")
         pygame.display.set_icon(programIcon)
         self.ship=Ship(self)
+        self.bullets = pygame.sprite.Group()
     def run_game(self):
         """Start the main loop for the game."""
         while True:
             # Watch for keyboard and mouse events
             self._check_events()
-            self._update_screen()
             self.ship.update()
+            self._update_bullets()
+            self._update_screen()
+    # Get rid of bullets that have disappeared.
+            for bullet in self.bullets.copy():
+             if bullet.rect.bottom <= 0:
+              self.bullets.remove(bullet)
+            print(len(self.bullets))
+
     def _check_events(self):
             """Respond to keypresses and mouse events."""
             for event in pygame.event.get():
@@ -39,6 +48,8 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_e:
+            self._fire_bullet()
     def _check_keyup_events(self, event):
         """Respond to key releases."""
         if event.key == pygame.K_RIGHT:
@@ -49,7 +60,21 @@ class AlienInvasion:
             """Update images on the screen, and flip to the new screen."""
             self.screen.fill(self.settings.bg_color)
             self.ship.blitme()
+            for bullet in self.bullets.sprites():
+                bullet.draw_bullet()
             pygame.display.flip()
+    def _fire_bullet(self):
+        if len(self.bullets) < self.settings.bullets_allowed:
+         new_bullet = Bullet(self)
+         self.bullets.add(new_bullet)
+    def _update_bullets(self):
+       """Update position of bullets and get rid of old bullets."""
+       #Update bullet positions
+       self.bullets.update()
+       # Get rid of bullets that have disappeared.
+       for bullet in self.bullets.copy():
+          if bullet.rect.bottom <= 0:
+             self.bullets.remove(bullet)
 if __name__=='__main__':
     #Make a game instance and run the game
     ai=AlienInvasion()

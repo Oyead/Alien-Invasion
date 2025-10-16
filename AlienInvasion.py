@@ -104,7 +104,11 @@ class AlienInvasion:
      self.aliens.add(alien)
     
     def _update_aliens(self):
-       """Update the positions of all aliens in the fleet."""
+       """
+Check if the fleet is at an edge,
+then update the positions of all aliens in the fleet.
+"""
+       self._check_fleet_edges()
        self.aliens.update()
 if __name__=='__main__':
     #Make a game instance and run the game

@@ -1,9 +1,11 @@
 import sys
 import pygame
+from time import sleep
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
     def __init__(self):
@@ -17,6 +19,7 @@ class AlienInvasion:
         programIcon=pygame.image.load("images/balatro-1.png")
         pygame.display.set_icon(programIcon)
         self.ship=Ship(self)
+        self.stats=GameStats(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
